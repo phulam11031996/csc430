@@ -1,0 +1,119 @@
+#lang typed/racket
+
+(require typed/rackunit)
+
+; 4.1 SIMPLE DATA
+; Exercise 15
+; 1/ Data definition:
+; 2/ Purpose: Define ==>. The function consumes two Boolean values,
+; call them sunny and friday. Its answer is #true if sunny is false
+; or friday is true. Note Logicians call this Boolean operation
+; implication, and they use the notation sunny => friday for this purpose.
+(define (==> [sunny : Boolean] [friday : Boolean]) : Boolean
+  ; 5/ Function body:
+  (or (not sunny) friday)
+)
+; 3/ Tests:
+(check-equal? (==> false false) true)
+(check-equal? (==> true true) true)
+(check-equal? (==> true false) false)
+
+
+; Exercise 19
+; 1/ Data definition:
+; 2/ Purpose: Define the function string-insert, which consumes a string
+; str plus a number i and inserts "_" at the ith position of str. Assume
+; i is a number between 0 and the length of the given string (inclusive).
+(define (string-insert [str : String] [i : Natural]) : String
+  ; 5/ Function body:
+  (define len (string-length str))
+  (cond [(< len i) (error 'string-insert "string is too long: ~e" str)]
+        [else (string-append (substring str 0 i) "_" (substring str i))])
+ )
+; Tests:
+(check-equal? (string-insert "123456789" 5) "12345_6789")
+(check-equal? (string-insert "123456789" 0) "_123456789")
+(check-exn
+ #px"string is too long"
+ (lambda () (string-insert "123456789" 10)))
+
+; Exercise 27
+; 1/ Data definition:
+(: TOTAL_PEOPLE Integer)
+(: BASE_PRICE Real)
+(: CHANGE_IN_PEOPLE Integer)
+(: CHANGE_IN_PRICE Real)
+(: BASE_COST Integer)
+(: COST_PER_ATTENDEE Real) 
+
+(define TOTAL_PEOPLE 120)
+(define BASE_PRICE 5.0)
+(define CHANGE_IN_PEOPLE 15)
+(define CHANGE_IN_PRICE 0.1)
+(define BASE_COST 180)
+(define COST_PER_ATTENDEE 0.04)
+
+; 2/ Purpose: Create constants
+(define (attendees [ticket-price : Real]) : Real
+  (- TOTAL_PEOPLE (* (- ticket-price BASE_PRICE) (/ CHANGE_IN_PEOPLE CHANGE_IN_PRICE))))
+
+(define (revenue [ticket-price : Real]) : Real 
+  (* ticket-price (attendees ticket-price)))
+
+(define (cost [ticket-price : Real]) : Real
+  (+ BASE_COST (* COST_PER_ATTENDEE (attendees ticket-price))))
+
+(define (profit [ticket-price : Real]) : Real
+  (- (revenue ticket-price)
+     (cost ticket-price)))
+
+(check-equal? (profit 5.1) 351.30000000000024)
+
+; 3/ Tests: None
+; 5/ Function body: None
+
+; 4.2 INTERVALS
+; 1/ Data definition:
+(define ONE_THOUSAND 1000)
+(define FIVE_THOUSAND 5000)
+(define INTEREST_RATE_ONE 0.04)
+(define INTEREST_RATE_TWO 0.045)
+(define INTEREST_RATE_THREE 0.05)
+
+; 2/ Purpose: The bank pays a flat 4% for deposits of up to $1,000,
+; a flat 4.5% per year for deposits of up to $5,000, and a flat 5%
+; for deposits of more than $5,000.
+(define (interest [deposit : Real]) : Real
+  ; 5/ Function body:
+  (cond
+    [(<= deposit ONE_THOUSAND) (* deposit INTEREST_RATE_ONE)]
+    [(<= deposit FIVE_THOUSAND) (* deposit INTEREST_RATE_TWO)]
+    [else (* deposit INTEREST_RATE_THREE)]))
+
+; 3/ Tests:
+(check-equal? (interest 500) 20.0)
+(check-equal? (interest 1500) 67.5)
+(check-equal? (interest 5500) 275.0)
+(check-equal? (interest 1000) 40.0)
+
+; 4.3 TYPED RACKET
+; Done
+
+; 4.4 STRUCTURES
+
+; 1/ Data Definition:
+(define-type furniture (U desk bookshelves))
+(struct desk ([width : Real] [height : Real] [depth : Real]))
+(struct bookshelves ([depth : Real] [num-of-shelves : Real] [shelf-width : Real]))
+
+(define (furniture-footprint furniture) : Real
+  (match furniture
+    [(desk w h d) (* w h)]
+    [(bookshelves d ns sw) ( * (* d ns) sw)]
+   )
+)
+
+; 2/ Tests:
+(check-equal? (furniture-footprint (desk 10 20 30)) 200)
+(check-equal? (furniture-footprint (bookshelves 10 20 30)) 6000)
+

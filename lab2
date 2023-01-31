@@ -1,0 +1,204 @@
+#lang typed/racket
+(require typed/rackunit)
+
+; Exercise 1
+; 1/ Data definition:
+(define list1 (cons "ball" (cons "juice" (cons "fog" '()))))
+(define list2 '())
+(define list3 (cons "ball" '()))
+
+; 2/ Purpose:
+; Listof String -> String
+; Accepts a list of strings and returns a single string combining
+; the input strings in reverse order
+(define (rev-str-app [alos : (Listof String)]) : String
+  ; 4/ Function body:
+  (match alos
+    ['() ""]
+    [(cons f r) (string-append (rev-str-app r) f)])
+  )
+
+; 3/ Tests:
+(check-equal? (rev-str-app list1) "fogjuiceball") 
+(check-equal? (rev-str-app list2) "") 
+(check-equal? (rev-str-app list3) "ball")
+
+; Exercise 2
+; rev-str-app is a type of (Listof String) String). Listof String is
+; about the parameter; String is its return type.
+; '+' sign is used to indicate that the type is a union of muiltiple types.
+; So it print out every parameter and the return types that use the '+' operation
+
+; Exercise 3
+; Develop a representation for bicycles; A bicycle can be either a Trek, a Bianchi,
+; or a Gunnar. Each one has a single field that is a number.
+(define-type bicycles (U trek bianchi gunnar))
+(struct trek ([year : Natural] [name : String]))
+(struct bianchi([year : Natural] [name : String]))
+(struct gunnar([year : Natural] [name : String]))
+
+; Exercise 4
+(define atrek (trek 2000 "Good Trek"))
+(check-equal? (trek-year atrek) 2000)
+(check-equal? (trek-name atrek) "Good Trek")
+
+; Exercise 5
+; 1/ Data definition:
+(define trek1 (trek 2000 "Good Trek") )
+(define trek2(trek 2001 "Bad Trek"))
+(define bianchi1 (bianchi 2021 "Good Bianchi1"))
+(define gunnar1 (gunnar 2002 "Good gunnar1"))
+
+(define ex5-list1 (cons trek1 (cons bianchi1 (cons gunnar1 (cons trek2 '())))))
+(define ex5-list2 (cons bianchi1 (cons gunnar1 '())))
+(define ex5-list3 '())
+
+(define result-list1 (cons trek1 (cons trek2 '())))
+(define result-list2 '())
+(define result-list3 '())
+
+; 2/ Purpose:
+; Develop the function only-treks, that consumes a list of bicycles and returns
+; a list containing only the Treks.
+; Listof bicycles -> Listof Trek
+(define (only-treks [alob : (Listof bicycles)]) : (Listof trek)
+  ; 4/ Function body:
+  (match alob
+    ['() '()]
+    [(cons f r) (cond
+                  [(trek? f) (append (cons f '()) (only-treks r))]
+                  [else (append '() (only-treks r))])]
+    )
+  )
+
+; 3/ Tests:
+(equal? (only-treks ex5-list1) result-list1) 
+(equal? (only-treks ex5-list2) result-list2) 
+(equal? (only-treks ex5-list3) result-list3) 
+
+; Excersise 6
+; 1/ Data definition:
+(define bianchi2 (bianchi 2021 "Good Bianchi1"))
+
+(define ex6-list1 (cons trek1 (cons bianchi1 (cons bianchi2 (cons trek2 '())))))
+(define ex6-list2 (cons trek1 (cons gunnar1 '())))
+(define ex6-list3 '())
+
+(define result-list4 (cons bianchi1 (cons bianchi2'())))
+(define result-list5 '())
+(define result-list6 '())
+
+; 2/ Purpose:
+; Develop the function only-bianchis, that consumes a list of bicycles and returns
+; a list containing only the Bianchis. Hint: same hint as last time.
+; Listof bicycles -> Listof bianchi
+(define (only-bianchis [alob : (Listof bicycles)]) : (Listof bianchi)
+  ; 4/ Function body:
+  (match alob
+    ['() '()]
+    [(cons f r) (cond
+                  [(bianchi? f) (append (cons f '()) (only-bianchis r))]
+                  [else (append '() (only-bianchis r))])]
+    )
+  )
+
+; 3/ Tests:
+(equal? (only-bianchis ex6-list1) result-list4) 
+(equal? (only-bianchis ex6-list2) result-list5) 
+(equal? (only-bianchis ex6-list3) result-list6)
+
+; Excercise 7
+; 1/ Data definition:
+(define ex7-list1 (cons trek1 (cons bianchi1 (cons bianchi2 (cons trek2 '())))))
+(define ex7-list2 (cons trek1 (cons trek2 '())))
+
+(define result7-list1 (cons bianchi1 (cons bianchi2 '())))
+(define result7-list2 '())
+
+; 2/Purpose:
+(define (check-bianchi [a-bike : bicycles]) : Boolean
+  (bianchi? a-bike)
+  )
+
+(define (only-these [alob : (Listof bicycles)]) : (Listof bicycles)
+  ; 4/ Function body:
+  (match alob
+    ['() '()]
+    [(cons f r) (cond
+                  [(check-bianchi f) (append (cons f '()) (only-these r))]
+                  [else (append '() (only-these r))])]
+    )
+  )
+
+;  3/ Tests:
+(equal? (only-these ex7-list1) result7-list1) 
+(equal? (only-these ex7-list2) result7-list2)
+
+; Excercise 8
+; 1/ Data definition:
+(define ex8-list1 (list "a" "b" "c"))
+(define ex8-list2 (list "d" "e" "f"))
+(define ex8-list3 '())
+
+(define result-ex8-list1 (list "a" "b" "c" "d" "e" "f"))
+(define result-ex8-list2 (list "a" "b" "c"))
+(define result-ex8-list3 '())
+
+; 2/ Purpose:
+; Develop the my-append function that consumes two lists and returns the
+; result of appending the second one to the first
+; (Listof Any) (Listof Any) -> Listof Any
+(define (my-append [aloa1 : (Listof Any)] [aloa2 : (Listof Any)]) : (Listof Any)
+  ; 4/ Function body:
+  (cond
+    [(null? aloa1) aloa2]
+    [else (cons (car aloa1) (my-append(cdr aloa1) aloa2))])
+  )
+
+
+; 3/ Tests:
+(equal? (my-append ex8-list1 ex8-list2) result-ex8-list1)
+(equal? (my-append ex8-list1 ex8-list3) result-ex8-list2)
+(equal? (my-append ex8-list3 ex8-list3) result-ex8-list3)
+
+; Excercise 9
+; 1/ Data definition:
+(define ex9-list1 (list 1 2 3 4 5 6))
+(define ex9-list2 '())
+
+; 2/ Purpose:
+; Develop the my-take function that consumes a list and a number n and returns
+; the first n elements of the list. If the list contains fewer than n elements,
+; it returns the entire list.
+; (Listof Any) (Listof Any) -> (Listof Any)
+(define (my-take[aloa : (Listof Any)] [num : Real]) : (Listof Any)
+  ; 4/ Function body:
+  (cond
+    [(equal? num 0) '()]
+    [(equal? aloa '()) '()]
+    [else (cons (car aloa) (my-take (cdr aloa) (- num 1)))])
+  )
+
+; 3/ Tests:
+(equal? (my-take ex9-list1 4) (list 1 2 3 4))
+(equal? (my-take ex9-list1 10) (list 1 2 3 4 5 6))
+(equal? (my-take ex9-list1 0) '())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

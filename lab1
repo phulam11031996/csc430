@@ -9,10 +9,7 @@
 ; call them sunny and friday. Its answer is #true if sunny is false
 ; or friday is true. Note Logicians call this Boolean operation
 ; implication, and they use the notation sunny => friday for this purpose.
-(define (==> [sunny : Boolean] [friday : Boolean]) : Boolean
-  ; 5/ Function body:
-  (or (not sunny) friday)
-)
+
 ; 3/ Tests:
 (check-equal? (==> false false) true)
 (check-equal? (==> true true) true)

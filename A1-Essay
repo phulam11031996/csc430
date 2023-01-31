@@ -1,0 +1,17 @@
+Project: A Self-driving Car
+
+One thing to consider is there will be lots of data that come from sensor, radar, lidar, camera, GPS and sensor stuff. This large amount of data must be processed and calculated fast in order to make fast and accurate predictions for what the car should do next. This means we need a language that can efficiently manage large data and parallel processing. Another consideration is that we need a language that is good for machine learning.
+
+Self-driving cars require a variety of programming languages to function properly. The most important languages for a self-driving car project are C++ and Python. A lot of programming on the onboard computer and machine learning will be required for this project.  C++ is a performance language that is often used in systems that need lots of computational power like perception, decision making, and control in self-driving vehicles. C++ are one of the best for implementing low-level systems which can control the vehicle's motors, brakes, steering, etc. Another important thing is that self-driving cars need a real-time system; C++ allows developers to control the computer's memory. Additionally, C++ has many libraries and frameworks that are used by the robotics and self-driving car industry: ROS, Autoware, and Apollo. Also, C++ is one of the fastest performance for programming on Linux, Mac, or Windows systems. The one thing that is bad about C++ is it might be a little difficult to pick up and start coding since that syntax is not very easy comparing two languages like python and ruby and also we have to deal with system calls, which are difficult to learn at the beginning.
+
+Python is another must for creating this project. Python because it is very popular and it is easy to pick up and start developing software. It is easier to read python code than some other languages. It is a high-level language that is commonly used for prototyping and implementing the higher-level systems in self-driving cars; The systems are planning, guessing, artificial intelligence and machine learning, math, science, data visualization, machine learning, AI, deep learning, etc. Python is very commonly used for making software that interacts with the car's sensors, cameras, lidar, radar, and object sensor stuff. Also Python is a very easy to use language that helps with implementing prototyping and writing complex algorithms.  There is one thing that is bad about python is it might be unsuitable for high performance software because it will use up a lot of memory.
+
+Additionally, both languages have a lot of support for machine learning, libraries, and frameworks that are important for "teaching" the car to drive on its own. For example, TensorFlow and PyTorch are popular choices for artificial intelligence and machine learning. OpenCV is a good choice for computer vision. MATHLAB can be used for prototyping and simulation; All four libraries used Python.
+
+In summary, C++ and python are both commonly used and the best languages for creating a self-driving car project, C++ is well fit for low level programming and control systems in real time to make fast and accurate decisions while python is best for prototyping and machine learning.
+
+
+
+
+
+

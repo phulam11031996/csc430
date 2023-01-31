@@ -1,0 +1,109 @@
+#lang typed/racket
+
+(require typed/rackunit)
+;; EXERCISE 0
+;; parse000 : Sexp -> Boolean
+(define (parse000 [sexp : Sexp]) : Boolean
+  (match sexp
+    [(list (? number? n) 'chris (? symbol? s)) #t]
+    [other #f]))
+
+;; tests
+(define input-parse000-1 (list 1 'chris 'symbol))
+(define input-parse000-2 (list 'a 'chris 'symbol))
+(define input-parse000-3 (list 1 'notchris 'symbol))
+(define input-parse000-4 (list 1 'notchris 1))
+
+(check-equal? (parse000 input-parse000-1) #t)
+(check-equal? (parse000 input-parse000-2) #f)
+(check-equal? (parse000 input-parse000-3) #f)
+(check-equal? (parse000 input-parse000-4) #f)
+
+;; EXERCISE 1
+;; parse001 : Sexp -> Boolean
+(define (parse001 [sexp : Sexp]) : (U Boolean Symbol)
+  (match sexp
+    [(list (? number? n) 'chris (? symbol? s)) s]
+    [other #f]))
+
+;; tests
+(define input-parse001-1 (list 1 'chris 'symbol))
+(define input-parse001-2 (list 'a 'chris 'symbol))
+(define input-parse001-3 (list 1 'notchris 'symbol))
+(define input-parse001-4 (list 1 'notchris 1))
+
+(check-equal? (parse001 input-parse001-1) 'symbol)
+(check-equal? (parse001 input-parse001-2) #f)
+(check-equal? (parse001 input-parse001-3) #f)
+(check-equal? (parse001 input-parse001-4) #f)
+
+;; EXERCISE 2
+;; parse002 : Sexp -> Boolean
+(define (parse002 [sexp : Sexp]) : (U (Listof Real) Boolean)
+  (match sexp
+    [(list a (list (? number? items) ...) b) (cast items (Listof Real))]
+    [other #f]))
+
+;; tests
+(define input-parse002-1 (list 1 (list 1 2 3) 2))
+(define input-parse002-2 (list 1 (list 1 2 'a) 2))
+(define input-parse002-3 (list 1 (list 1 2 3) 2 3))
+
+(check-equal? (parse002 input-parse002-1) (list 1 2 3))
+(check-equal? (parse002 input-parse002-2) #f)
+(check-equal? (parse002 input-parse002-3) #f)
+
+;; EXERCISE 3
+;; ohno : Sexp -> String
+(define (ohno [sexp : Sexp]) : Symbol
+  (match sexp
+    [(? number? a) 'okay]
+    [other (error 'ohno "expected a number, got ~e" sexp)]))
+
+;; tests
+(check-equal? (ohno 1) 'okay)
+(check-exn
+ #px"expected a number, got "
+ (lambda () (ohno 'a)))
+
+;; EXERCISE 4
+(define-type ArithC (U numC plusC multC))
+(struct numC ([n : Real]))
+(struct plusC ([l : ArithC] [r : ArithC]))
+(struct multC ([l : ArithC] [r : ArithC]))
+
+;; EXERCISE 5
+;; interp : ArithC -> Real
+(define (interp [expr : ArithC]) : Real
+  (match expr
+    [(? numC? n) (numC-n n)]
+    [(plusC l r) (+ (interp l) (interp r))]
+    [(multC l r) (* (interp l) (interp r))]))
+
+(check-equal? (interp (numC 2)) 2)
+(check-equal? (interp (multC (numC -2) (numC 3))) -6)
+(check-equal? (interp (multC (numC 0) (numC 3))) 0)
+
+;; EXERCISE 6
+(define (add-nums [arithc : ArithC]) : Real
+  (match arithc
+    [(numC n) 0]
+    [(plusC l r) (+ 1 (+ 0 (add-nums l)) (add-nums r))]
+    [(multC l r) (+ 0 (+ 0 (add-nums l)) (add-nums r))]))
+
+
+(check-equal? (add-nums (multC (numC -2) (numC 3))) 0)
+(check-equal? (add-nums (plusC (numC 4) (plusC(numC -2) (numC 3)))) 2)
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -120,19 +120,20 @@
   (bianchi? a-bike)
   )
 
-(define (only-these [alob : (Listof bicycles)]) : (Listof bicycles)
+(define (only-these [cb  : (-> bicycles Boolean)] [alob : (Listof bicycles)]) : (Listof bicycles)
+  
   ; 4/ Function body:
   (match alob
     ['() '()]
     [(cons f r) (cond
-                  [(check-bianchi f) (append (cons f '()) (only-these r))]
-                  [else (append '() (only-these r))])]
+                  [(cb f) (append (cons f '()) (only-these cb r))]
+                  [else (append '() (only-these cb r))])]
     )
   )
 
 ;  3/ Tests:
-(equal? (only-these ex7-list1) result7-list1) 
-(equal? (only-these ex7-list2) result7-list2)
+(equal? (only-these check-bianchi ex7-list1) result7-list1) 
+(equal? (only-these check-bianchi ex7-list2) result7-list2)
 
 ; Excercise 8
 ; 1/ Data definition:
@@ -183,6 +184,8 @@
 (equal? (my-take ex9-list1 4) (list 1 2 3 4))
 (equal? (my-take ex9-list1 10) (list 1 2 3 4 5 6))
 (equal? (my-take ex9-list1 0) '())
+
+
 
 
 
